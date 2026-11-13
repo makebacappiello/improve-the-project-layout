@@ -3,6 +3,7 @@ const Sequelize = require("sequelize");
 module.exports = (sequelize) => {
   class Movie extends Sequelize.Model {}
   Movie.init(
+    // Attributes object
     {
       // Set custom primary key column
       id: {
@@ -55,7 +56,15 @@ module.exports = (sequelize) => {
         defaultValue: false, // set default value
       },
     },
-    { sequelize }
+    // MODEL OPTIONS OBJECT
+    {
+      tableName: "my_movies_table", // table name change
+
+      // modelName: "movie", // set model name to 'movie'; table name will be 'movies'
+      // freezeTableName: true, // disable plural table names
+      timestamps: false, // disable eg. createdAt and timestamps
+      sequelize,
+    }
   );
 
   return Movie;

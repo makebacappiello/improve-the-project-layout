@@ -6,9 +6,9 @@ const { Movie } = db.models;
 
   try {
     const moviex = await Movie.create({
-      title: "",
+      title: "Casper",
       runtime: 81,
-      releaseDate: "1800-01-01",
+      releaseDate: "1900-01-01",
       isAvailableOnVHS: true,
     });
     console.log(moviex.toJSON());
