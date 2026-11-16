@@ -58,8 +58,12 @@ module.exports = (sequelize) => {
     },
     // MODEL OPTIONS OBJECT
 
+    // {
+    //   freezeTableName: true, // disable plural table names
+    //   sequelize,
+    // },
     {
-      freezeTableName: true, // disable plural table names
+      paranoid: true, // enable "soft" deletes
       sequelize,
     }
   );

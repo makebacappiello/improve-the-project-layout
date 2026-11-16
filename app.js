@@ -1,5 +1,6 @@
 const db = require("./db");
 const { Movie, Person } = db.models;
+const { Op } = db.Sequelize;
 
 (async () => {
   await db.sequelize.sync({ force: true });
@@ -7,9 +8,9 @@ const { Movie, Person } = db.models;
   try {
     const moviex = await Movie.create({
       title: "Angels",
-      runtime: 81,
+      runtime: 103,
       releaseDate: "1900-01-01",
-      isAvailableOnVHS: true,
+      isAvailableOnVHS: false,
     });
     // console.log(moviex.toJSON());
 
@@ -67,7 +68,7 @@ const { Movie, Person } = db.models;
 
     const movies = await Movie.findAll({
       where: {
-        runtime: 92,
+        runtime: 115,
         isAvailableOnVHS: true,
       },
     });
@@ -82,6 +83,72 @@ const { Movie, Person } = db.models;
       },
     });
     console.log(otherMovies.map((movie) => movie.toJSON()));
+
+    const movies6 = await Movie.findAll({
+      attributes: ["id", "title"], // return only the id and title columns
+      where: {
+        releaseDate: {
+          [Op.gte]: "1990-01-01", // changed from 2004 so Toy Story (1995) can pass this check
+        },
+        runtime: {
+          [Op.between]: [75, 115], // keep only ONE runtime rule; 75 to 115 minutes
+        },
+        title: {
+          [Op.endsWith]: "story", // title must end with "story"
+        },
+      },
+    });
+    console.log(movies6.map((movie) => movie.toJSON())); // should show Toy Story
+    const movies5 = await Movie.findAll({
+      attributes: ["id", "title"],
+      where: {
+        title: {
+          [Op.endsWith]: "story",
+        },
+      },
+      order: [["id", "DESC"]], // IDs in descending order
+    });
+    console.log(movies5.map((movie) => movie.toJSON()));
+
+    // const toyStory3 = await Movie.findByPk(4); // id 4 is Toy Story 3 (renamed "Updated Title"), not 3
+    // toyStory3.isAvailableOnVHS = true; // changes the value in memory only
+    // await toyStory3.save(); // saves the change to the database
+    // console.log(toyStory3.get({ plain: true })); // prints the saved movie as a plain object
+
+    // const angels = await Movie.findByPk(1); // id 1 is Angels
+    // await angels.update({
+    //   // update changes the value and saves it in one step
+    //   isAvailableOnVHS: true, // Angels was created as false, so this will be a real change
+    // });
+    // console.log(angels.get({ plain: true })); // prints the updated Angels
+
+    // const toyStory3 = await Movie.findByPk(3);
+    // await toyStory3.update(
+    //   {
+    //     title: "Trinket Tale 3", // new title
+    //     isAvailableOnVHS: true,
+    //   },
+    //   {}
+    // );
+
+    // console.log(toyStory3.get({ plain: true }));
+
+    const toyStory3 = await Movie.findByPk(3);
+    await toyStory3.update(
+      {
+        title: "Trinket Tale 3", // this will be ignored
+        isAvailableOnVHS: true,
+      },
+      { fields: ["title", "isAvailableOnVHS"] }
+    );
+
+    console.log(toyStory3.get({ plain: true }));
+
+    const toyStory = await Movie.findByPk(1); // finds the movie with id 1 (that's Angels in your data)
+    await toyStory.destroy(); // deletes that movie from the database
+
+    const allMovies = await Movie.findAll(); // gets every movie that is left
+    console.log(allMovies.map((movie) => movie.toJSON())); // prints them, and the deleted movie should be missing
   } catch (error) {
     if (error.name === "SequelizeValidationError") {
       const errors = error.errors.map((err) => err.message);
