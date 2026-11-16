@@ -57,15 +57,22 @@ module.exports = (sequelize) => {
       },
     },
     // MODEL OPTIONS OBJECT
-    {
-      tableName: "my_movies_table", // table name change
 
-      // modelName: "movie", // set model name to 'movie'; table name will be 'movies'
-      // freezeTableName: true, // disable plural table names
-      timestamps: false, // disable eg. createdAt and timestamps
+    {
+      freezeTableName: true, // disable plural table names
       sequelize,
     }
   );
+
+  // {
+  //   tableName: "my_movies_table", // table name change
+
+  //   // modelName: "movie", // set model name to 'movie'; table name will be 'movies'
+  //   // freezeTableName: true, // disable plural table names
+  //   timestamps: false, // disable eg. createdAt and timestamps
+  //   sequelize,
+  // }
+  // );
 
   return Movie;
 };
