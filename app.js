@@ -15,7 +15,7 @@ const { Movie, Person } = db.models;
 
     const movie = await Movie.create({
       title: "Toy Story",
-
+      runtime: 81,
       releaseDate: "1995-11-22",
       isAvailableOnVHS: true,
     });
@@ -30,7 +30,7 @@ const { Movie, Person } = db.models;
     console.log(movie2.toJSON());
 
     const person = await Person.create({
-      firstName: "",
+      firstName: "Makeba",
       lastName: "Misty",
     });
     console.log(person.toJSON());
